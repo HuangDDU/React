@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>4_getSnapShotBeforeUpdate的使用场景</title>
+	<style>
+		.list{
+			width: 200px;
+			height: 150px;
+			background-color: skyblue;
+			overflow: auto;
+		}
+		.news{
+			height: 30px;
+		}
+	</style>
+</head>
+<body>
+	<div class="list">
+		<div class="news">新闻7</div>
+		<div class="news">新闻6</div>
+		<div class="news">新闻5</div>
+		<div class="news">新闻4</div>
+		<div class="news">新闻3</div>
+		<div class="news">新闻2</div>
+		<div class="news">新闻1</div>
+	</div>
+	<script>
+		const list = document.getElementsByClassName("list")[0]
+		list.scrollTop = 30  // 滚动条上滑
+		list.scrollHeight // 查看滚动条剩余高度
+	</script>
+
+	
+
+</body>
+</html>
