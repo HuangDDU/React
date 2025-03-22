@@ -1552,6 +1552,10 @@ ReactDOM.render(<Person name="jerry"/>,document.getElementById("test1"))
 
 #### 3.2.1 效果与功能
 
+1. 展示：主列表展示多个TODO条目，左下角展示已完成和全部的条目数。
+1. 新增：输入框内新增
+1. 删除：单个条目的按钮删除，选中多个条目的按钮删除
+
 #### 3.2.2 静态组件拆分
 
 1. 运行效果：使用开发者工具查看React组件树结构
@@ -1731,5 +1735,160 @@ ReactDOM.render(<Person name="jerry"/>,document.getElementById("test1"))
 
 ## 4. React ajax
 
+### 4.1 代理配置
 
+#### 4.1.1 配置单个代理
+
+1. 启动服务1在5000端口，访问获得JSON字符串。
+
+   ```bash
+   node server1.js
+   ```
+
+2. 安装axios
+
+   ```bash
+   # 视频推荐使用yarn安装
+   # yarn add axios
+   # 同这里使用npm安装
+   npm install axios
+   ```
+
+3. App.js中添加按钮调用axios访问服务1，启动React在3000端口访问5000端口的服务出现跨域问题，其原因在于ajax请求给5000端口node后端的有响应但是3000端口React不接受这个响应。
+
+   ```react
+   getStudentData = () => {
+       axios.get("http://localhost:5000/students").then(
+         response => { console.log('成功了', response.data); },
+         error => { console.log('失败了', error); }
+       )
+     }
+   
+     getCarData = () => { }
+     render() {
+       return (
+         <div >
+           <button onClick={this.getStudentData}>点我获得学生数据</button>
+           <button>点我获得汽车数据</button>
+         </div>
+       )
+     }
+   ```
+
+   ![4.1.1 配置单个代理 跨域问题](React笔记.assets/4.1.1 配置单个代理 跨域问题.gif)
+
+4. 配置代理：
+
+   - 修改发送的请求为3000端口
+
+     ```
+     getStudentData = () => {
+         axios.get("http://localhost:3000/students").then(
+           response => { console.log('成功了', response.data); },
+           error => { console.log('失败了', error); }
+         )
+       }
+     ```
+
+     
+
+   - 需要在配置中`package.json`文件中添加代理，3000端口找不到的就去找5000。
+
+     ```
+     "proxy": "http://localhost:5000"
+     ```
+
+     
+
+5. 最后效果，直接返回JSON数据![4.1.1 配置单个代理 ](React笔记.assets/4.1.1 配置单个代理 .gif)
+
+
+
+#### 4.1.2 配置多个代理
+
+1. 启动另一个服务2在5001端口
+
+   ```
+   node server2.js
+   ```
+
+2. 删除掉之前的配置的代理
+
+3. 对应函数url写前缀
+
+   ```react
+     getStudentData = () => {
+       axios.get("http://localhost:3000/api1/students").then(
+         response => { console.log('成功了', response.data); },
+         error => { console.log('失败了', error); }
+       )
+     }
+   
+     getCarData = () => {
+       axios.get("http://localhost:3000/api2/cars").then(
+         response => { console.log('成功了', response.data); },
+         error => { console.log('失败了', error); }
+       )
+     }
+   ```
+
+4. `src`目录下配置setupProxy.js
+
+   - React 18-写法
+
+     ```react
+     // react 18-写法
+     const {proxy} = require('http-proxy-middleware')
+     
+     module.exports = function(app){
+     	app.use(
+     		proxy('/api1',{ //遇见/api1前缀的请求，就会触发该代理配置
+     			target:'http://localhost:5000', //请求转发给谁
+     			changeOrigin:true,//控制服务器收到的请求头中Host的值
+     			pathRewrite:{'^/api1':''} //重写请求路径(必须)
+     		}),
+     		proxy('/api2',{
+     			target:'http://localhost:5001',
+     			changeOrigin:true,
+     			pathRewrite:{'^/api2':''}
+     		}),
+     	)
+     }
+     ```
+
+   - React 18+写法
+
+     ```react
+     const { createProxyMiddleware } = require('http-proxy-middleware')
+     
+     module.exports = function (app) {
+     	app.use(
+     		'/api1',
+     		createProxyMiddleware({
+     			target: 'http://localhost:5000', // 转发目标
+     			changeOrigin: true, // 控制服务器收到的请求头中Host的值
+     			pathRewrite: { '^/api1:': '' } // 重写请求路径
+     		})
+     	)
+     	app.use(
+     		'/api2',
+     		createProxyMiddleware({
+     			target: 'http://localhost:5001',
+     			changeOrigin: true,
+     			pathRewrite: { '^/api2:': '' }
+     		})
+     	)
+     
+     }
+     ```
+
+   
+
+### 4.2 github用户搜索案例
+
+#### 4.2.1 静态页面拆分
+
+
+
+## 5.
 
