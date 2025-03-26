@@ -843,12 +843,10 @@ ReactDOM.render(<Person name="jerry"/>,document.getElementById("test1"))
      - state造成的更改，render会调用多次。
      - 最后点击卸载组件后，由于计时器没卸载，就会报错。
 
-   - 代码：
-
-     > react_basic\12_组件的生命周期\1_不用生命周期.html
+   - 代码：react_basic\12_组件的生命周期\1_不用生命周期.html
 
      ```react
-     // 1. 创建组件
+  // 1. 创建组件
      class Life extends React.Component{
          constructor(props){
              super(props)
@@ -894,7 +892,7 @@ ReactDOM.render(<Person name="jerry"/>,document.getElementById("test1"))
      // 2. 渲染组件
      ReactDOM.render(<Life/>,document.getElementById("test"))
      ```
-
+     
      
 
 2. 使用生命周期：componentDidMount -> render -> componentWillUnmount
@@ -1886,9 +1884,120 @@ ReactDOM.render(<Person name="jerry"/>,document.getElementById("test1"))
 
 ### 4.2 github用户搜索案例
 
-#### 4.2.1 静态页面拆分
+#### 4.2.1 效果与功能
+
+![4.2 github用户搜索案例](React笔记.assets/4.2 github用户搜索案例.gif)
+
+#### 4.2.2 静态页面拆分
+
+1. 粘贴html到index.jsx
+2. 替换关键字：
+   - class -> className
+   - style="key: value" -> style = {{key:"value"}}
+3. 额外属性
+   - 图片alt属性
+   - 超链接target与rel属性
 
 
 
-## 5.
+#### 4.2.3 axios发送请求
+
+1. 启动node.js后端平且配置代理
+
+   - 启动node.js后端，http://localhost:5000/search/users?q=xxxxxx相当于对Github API的访问https://api.github.com/search/users?q=xxxxxx，Get请求可以用浏览器网址输入框直接访问，查看响应的JSON格式。
+
+     ```bash
+     # D:\2.code\React\Shangguigu\react全家桶资料\react全家桶资料\05_所需服务器\server\server
+     npm start
+     ```
+
+   - 配置代理，直接复制之前的setupProxy.js文件，只保留对于api1的访问
+
+2. user信息存在App组件的state里，并暴露函数作为props传递给Search组件。
+
+3. `Search`组件，为按钮绑定onClick事件
+
+
+
+#### 4.2.4 展示数据
+
+1. `List组件`直接展示用户头像、链接、名字。
+
+
+
+#### 4.2.5 完成案例
+
+> 代码：ShangguiguMe\react_staging\05_src_github搜索案例_axios
+
+1. `App`组件里State保存、更新。
+2. `Search`组件里，首次搜索提示、loading、展示结果、error错误四种状态的设置
+3. `List`组件里，用三目运算符实现多个页面的选择。
+
+
+
+#### 4.2.6 使用消息订阅
+
+> 代码：ShangguiguMe\react_staging\06_src_github搜索案例_pubsub
+
+1. 下载PubSubJS
+
+   ```bash
+   npm install pubsub-js --save
+   ```
+
+2. 清理`App`组件的状态，用最简单组件组成，不传递props属性。
+
+3. 消息发布组件`Search`组件，向github_search发布消息。
+
+4. 消息接受组件`List`保存状态，在componentDidMount钩子中订阅github_search发布消息，在componentWillUnmount解除订阅。
+
+
+
+#### 4.2.7 使用fetch订阅
+
+> 代码：ShangguiguMe\react_staging\07_src_github搜索案例_fetch
+
+1. 发送请求的另一个方式，axios和jQuery均是对底层XHR的封装，而fetch与XHR同一层次
+2. 符合关注分离原则
+3. 用的比较少
+
+
+
+#### 4.2.8 总结
+
+1. 
+
+   1. 设计状态时要考虑全面，例如带有网络请求的组件，要考虑请求失败怎么办。
+
+   2. ES6小知识点：解构赋值+重命名
+
+      ```js
+      let obj = {a:{b:1}}
+      const {a} = obj; //传统解构赋值
+      const {a:{b}} = obj; //连续解构赋值
+      const {a:{b:value}} = obj; //连续解构赋值+重命名
+      ```
+
+3. 消息订阅与发布机制
+   - 先订阅，再发布（理解：有一种隔空对话的感觉）
+   - 适用于任意组件间通信
+   - 要在组件的componentWillUnmount中取消订阅
+
+​    4.fetch发送请求（关注分离的设计思想）
+
+```
+try {
+ const response= await fetch(`/api1/search/users2?q=${keyWord}`)
+ const data = await response.json()
+console.log(data);
+} catch (error) {
+console.log('请求出错',error);
+}
+```
+
+
+
+## 5. React路由
+
+
 

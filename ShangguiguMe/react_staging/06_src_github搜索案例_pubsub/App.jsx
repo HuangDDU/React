@@ -7,7 +7,10 @@ export default class App extends Component {
   render() {
     return (
       <div >
-        App
+        <div className="container">
+          <Search />
+          <List/>
+        </div>
       </div>
     )
   }

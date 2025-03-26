@@ -1,4 +1,4 @@
-react 18-写法
+// react 18-写法
 const {proxy} = require('http-proxy-middleware')
 
 module.exports = function(app){
