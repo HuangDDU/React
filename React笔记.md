@@ -846,7 +846,7 @@ ReactDOM.render(<Person name="jerry"/>,document.getElementById("test1"))
    - 代码：react_basic\12_组件的生命周期\1_不用生命周期.html
 
      ```react
-  // 1. 创建组件
+    // 1. 创建组件
      class Life extends React.Component{
          constructor(props){
              super(props)
@@ -1998,6 +1998,50 @@ console.log('请求出错',error);
 
 
 ## 5. React路由
+
+### 5.1 相关理解
+
+#### 5.1.1 SPA理解
+
+1. 单页面多组件应用（**SPA**，single page web application）：整个应用只有单个页面。
+2. 点击链接不会刷新页面，只会局部更新。
+3. 数据通过ajax请求获取，在前端异步展示。
+
+#### 5.1.2 路由理解
+
+1. 路由：键值对映射关系
+2. 对于后端path:function，对于前端path:component。
+3. 前端路由本质是`History`库实现的，
+
+#### 5.1.3 react-router-dom理解
+
+1. react的官方插件库，用于实现SPA应用，内置多种组件。
+
+2. 下载（暂时下载v5，后续学习v6）
+
+   ```bash
+   npm install react-router-dom@5
+   ```
+
+   
+
+### 5.2 案例1-路由的基本使用
+
+1. 效果：点击导航栏选项，页面不刷新，但是主面板组件随着更改
+
+   ![5.2 案例1-路由的基本使用](React笔记.assets/5.2 案例1-路由的基本使用.gif)
+
+2. 构建
+
+   > 代码：ShangguiguMe\react_staging\src
+
+   - 在`App`组件静态页面拆分，class=替换为className=，使用`react-router-dom`库中的`Route`组件注册路由，使用`Link`编写路由跳转链接。
+   - 分别构建主面板中的两个组件`About`, `Home。`
+   - 在index.js里外层添加`react-router-dom`库中的`BrowserRouter`。
+
+
+
+### 5.3
 
 
 
