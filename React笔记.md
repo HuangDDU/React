@@ -846,7 +846,7 @@ ReactDOM.render(<Person name="jerry"/>,document.getElementById("test1"))
    - 代码：react_basic\12_组件的生命周期\1_不用生命周期.html
 
      ```react
-    // 1. 创建组件
+      // 1. 创建组件
      class Life extends React.Component{
          constructor(props){
              super(props)
@@ -2041,7 +2041,88 @@ console.log('请求出错',error);
 
 
 
-### 5.3
+### 5.4 路由组件和一般组件
+
+1. 写法不同：
+   - 一般组件：<Demo/>
+   - 路由组件：<Route path="/demo" component={Demo}/>
+2. 存放位置不同：
+   - 一般组件：components
+   - 路由组件：pages
+
+3. 接收到的props不同：
+
+   - 一般组件：写组件标签时传递了什么，就能收到什
+
+   - 路由组件：接收到三个固定的属性
+
+     ```
+     history:
+       go: ƒ go(n)
+       goBack: ƒ goBack()
+       goForward: ƒ goForward()
+       push: ƒ push(path, state)
+       replace: ƒ replace(path, state)
+     location:
+       pathname: "/about"
+       search: ""
+       state: undefined
+     match:
+       params: {}
+       path: "/about"
+       url: "/about"
+     ```
+
+     
+
+​                      
+
+### 5.3 NavLink使用
+
+> 代码：ShangguiguMe\react_staging\09_src_NavLink的使用
+
+1. 使用Navlink组件代替Link组件能够显示按钮的高亮。
+2. 通过activeClassName指定组件样式。
+
+
+
+### 5.4 封装NavLink组件
+
+> 代码：ShangguiguMe\react_staging\10_src_封装NavLink
+
+1. 把原本的`NavLink`封装成MyNavLink组件，避免重复的内容写属性添加。
+
+   ```react
+   import React, { Component } from 'react'
+   import { NavLink } from 'react-router-dom'
+   
+   export default class MyNavLink extends Component {
+       render() {
+           // console.log(this.props);
+           return (
+               <NavLink activeClassName="atguigu" className="list-group-item" {...this.props} />
+           )
+       }
+   }
+   ```
+
+2. 使用时候就能少一点代码
+
+   ```react
+   <MyNavLink to="/about">About</MyNavLink>
+   <MyNavLink to="/home">Home</MyNavLink>
+   ```
+
+   
+
+### 5.5 Switch的使用
+
+> 
+
+1. 路由页面展示部分本质对于每个`Route`组件使用if else语句，如果由多个path相同的`Route`组件会对于一个链接会同时显示多个路由页面。
+2. 使用`Switch`组件可以类似switch case进行选择，此时对多个path相同的`Route`组件会对于一个链接会只会显示第一个路由页面。
+
+
 
 
 
