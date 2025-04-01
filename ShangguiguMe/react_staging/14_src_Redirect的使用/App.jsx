@@ -34,7 +34,7 @@ export default class App extends Component {
                   <Switch>
                     <Route path="/about" component={About} />
                     <Route path="/home" component={Home} />
-                    <Redirect to="/about" />
+                    <Redirect to="/home" />
                   </Switch>
                 </div>
               </div>

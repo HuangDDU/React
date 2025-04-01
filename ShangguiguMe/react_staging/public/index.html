@@ -3,8 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <title> React脚手架 </title>
-		<link rel="stylesheet" href="/css/bootstrap.css">
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <!-- 这里多层路由时刷新样式丢失 -->
+		<!-- <link rel="stylesheet" href="./css/bootstrap.css"> -->
+		<!-- 使用绝对路径 -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+		<!-- public路径添加 -->
+    <!-- <link rel="stylesheet" href="%PUBLIC_URL%/css/bootstrap.css"> -->
     <style>
 			.atguigu{
 				background-color: rgb(209, 137, 4) !important;

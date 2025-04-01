@@ -2027,6 +2027,8 @@ console.log('请求出错',error);
 
 ### 5.2 案例1-路由的基本使用
 
+#### 5.2.1 基本页面展示
+
 1. 效果：点击导航栏选项，页面不刷新，但是主面板组件随着更改
 
    ![5.2 案例1-路由的基本使用](React笔记.assets/5.2 案例1-路由的基本使用.gif)
@@ -2041,7 +2043,7 @@ console.log('请求出错',error);
 
 
 
-### 5.4 路由组件和一般组件
+#### 5.2.2 路由组件和一般组件
 
 1. 写法不同：
    - 一般组件：<Demo/>
@@ -2077,7 +2079,7 @@ console.log('请求出错',error);
 
 ​                      
 
-### 5.3 NavLink使用
+#### 5.2.3 NavLink使用
 
 > 代码：ShangguiguMe\react_staging\09_src_NavLink的使用
 
@@ -2086,7 +2088,7 @@ console.log('请求出错',error);
 
 
 
-### 5.4 封装NavLink组件
+#### 5.2.4 封装NavLink组件
 
 > 代码：ShangguiguMe\react_staging\10_src_封装NavLink
 
@@ -2115,14 +2117,115 @@ console.log('请求出错',error);
 
    
 
-### 5.5 Switch的使用
+#### 5.2.5 Switch的使用
 
-> 
+> 代码：ShangguiguMe\react_staging\11_src_Switch的使用
 
 1. 路由页面展示部分本质对于每个`Route`组件使用if else语句，如果由多个path相同的`Route`组件会对于一个链接会同时显示多个路由页面。
 2. 使用`Switch`组件可以类似switch case进行选择，此时对多个path相同的`Route`组件会对于一个链接会只会显示第一个路由页面。
 
 
+
+#### 5.2.6 解决样式丢失问题
+
+> 代码：ShangguiguMe\react_staging\12_src_解决样式丢失问题
+
+1. 问题：碰到多层路由时刷新页面导致的样式
+
+2. 分析：进入多层路由刷新后导致会从上一层路由而不是根目录寻找样式文件。例如此处bootstrap样式为http://localhost:3000/atguigu/css/bootstrap.css。
+
+3. 解决方案：
+
+   - 绝对路径
+
+     ```html
+     <link rel="stylesheet" href="/css/bootstrap.css">
+     ```
+
+   - public路径添加
+
+     ```html
+     <link rel="stylesheet" href="%PUBLIC_URL%/css/bootstrap.css">
+     
+     ```
+
+   - index.js中`HashRouter`组件替代`BrowserRouter`组件
+
+     ```react
+     <HashRouter>
+         <App />
+     </HashRouter>
+     ```
+
+     
+
+#### 5.2.7 路由模糊匹配与严格匹配
+
+> 代码：ShangguiguMe\react_staging\13_src_精准匹配与模糊匹配
+
+1. 问题：路由页面的注册链接只要在路由链接处的为其前缀即可模糊匹配成功。
+2. 解决方案：在路由注册时添加exact属性开启严格匹配
+3. 原则：不影响页面展示时尽量不要开启严格匹配。
+
+
+
+#### 5.2.8 Redict的使用
+
+> 代码：ShangguiguMe\react_staging\14_src_Redirect的使用
+
+1. 在Route组件最后添加`Redirect`组件，所有Route都匹配不成功时匹配这个路由，作为接盘侠。
+
+   ```react
+   <Switch>
+       <Route path="/about" component={About} />
+       <Route path="/home" component={Home} />
+       <Redirect to="/home" />
+     </Switch>
+   ```
+
+
+
+### 5.3 案例2-嵌套路由
+
+1. 效果![5.3 嵌套路由](React笔记.assets/5.3 嵌套路由.gif)
+
+2. 代码，注册路由和使用路由时都要指定多层路径。
+
+   > 代码：ShangguiguMe\react_staging\15_src_嵌套路由的使用
+
+
+
+### 5.4 案例3- 向路由组件传递参数数据
+
+#### 5.4.1 传递parameter参数
+
+1. 效果![5.4.1 传递parameter参数](React笔记.assets/5.4.1 传递parameter参数.gif)
+
+2. 代码
+
+   - 注册路由
+
+     ```react
+     <Route path="/home/message/detail/:id/:title" component={Detail} />
+     ```
+
+   - 使用路由
+
+     ```react
+     <Link to={`/home/message/detail/${msgObj.id}/${msgObj.title}`}>{msgObj.title}</Link>
+     ```
+
+
+
+#### 5.4.2 传递参数
+
+
+
+
+
+###  5.10 
+
+> 代码
 
 
 
