@@ -2199,25 +2199,158 @@ console.log('请求出错',error);
 
 #### 5.4.1 传递parameter参数
 
-1. 效果![5.4.1 传递parameter参数](React笔记.assets/5.4.1 传递parameter参数.gif)
+1. 效果：url发生变化，并在props.match.params携带了参数字典。![5.4.1 传递parameter参数](React笔记.assets/5.4.1 传递parameter参数.gif)
 
 2. 代码
 
-   - 注册路由
+   > 代码：ShangguiguMe\react_staging\16_src_向路由组件传递params参数
+
+   - `Message`组件里注册路由使用冒号分割标识变量名
 
      ```react
      <Route path="/home/message/detail/:id/:title" component={Detail} />
      ```
 
-   - 使用路由
+   - `Message`组件里使用路由使用$标识值
 
      ```react
      <Link to={`/home/message/detail/${msgObj.id}/${msgObj.title}`}>{msgObj.title}</Link>
      ```
+     
+   - `Detail`组件里接受参数
+
+     ```react
+     const { id, title } = this.props.match.params
+     ```
+
+     
+
+#### 5.4.2 传递search参数
+
+1. 效果：url发生变化，并在props.location.search携带了类似query查询字符串。![5.4.2 传递search参数](React笔记.assets/5.4.2 传递search参数.gif)
+
+2. 代码
+
+   > 代码：ShangguiguMe\react_staging\17_src_向路由组件传递search参数
+
+   - `Message`组件里无需声明接收，正常注册路由即可
+
+     ```react
+     <Route path="/home/message/detail" component={Detail} />
+     ```
+
+   - `Message`组件里使用路由类似query查询字符串
+
+     ```react
+     <Link to={`/home/message/detail/?id=${msgObj.id}&title=${msgObj.title}`}>{msgObj.title}</Link>
+     ```
+
+   - `Detail`组件里解析prop.location.search字符串
+
+     ```react
+     import qs from 'querystring-es3'
+     
+     const {search} = this.props.location
+     const {id,title} = qs.parse(search.slice(1))
+     ```
+
+     
+
+#### 5.4.3 传递state参数
+
+1. 效果：url并不会发生变化，在
+
+   ![5.4.3 传递state参数](React笔记.assets/5.4.3 传递state参数.gif)
+
+2. 代码：
+
+   > 代码：ShangguiguMe\react_staging\18_src_向路由组件传递state参数
+
+   - `Message`组件里
+
+     ```react
+     <Route path="/home/message/detail" component={Detail} />
+     ```
+
+   - `Message`组件里使用路由类似字典指定url和参数字典到state对象
+
+     ```react
+     <Link to={{pathname:'/home/message/detail',state:{id:msgObj.id,title:msgObj.title}}}>{msgObj.title}</Link>
+     ```
+
+   - `Detail`组件里解析prop.location.search字符串
+
+     ```react
+      const {id,title} = this.props.location.state || {}
+     ```
+
+     
+
+#### 5.4.4 push与replace模式
+
+代码：ShangguiguMe\react_staging\19_src_push与replace模式
+
+1. 默认以栈的数据结构存储历史记录，路由跳转相当于向栈顶压入新的元素。
+
+2. 使用`Link`组件时replace指定，相当于替换栈顶元素。
+
+   ```
+   <Link replace to={{pathname:'/home/message/detail',state:{id:msgObj.id,title:msgObj.title}}}>{msgObj.title}</Link>
+   ```
+
+   
+
+#### 5.4.5 编程式路由导航
+
+> 代码：ShangguiguMe\react_staging\19_src_push与replace模式
+
+1. 绑定按钮事件实现路由跳转
+2. 跳转到指定路径：
+   - this.props.history.replace：replace方式
+   - this.props.history.push：push方式
+3. 跳转历史记录中前、后路径
+   - this.props.history.goBack：向前
+   - this.props.history.goForward：向后
+   - this.props.history.go：正数向前跳转，负数向后跳转
 
 
 
-#### 5.4.2 传递参数
+#### 5.4.6 withRouter的使用
+
+1. 效果：一般组件`head`里的按钮也能像路由组件里一样操作history对象
+
+   ![5.4.6 withRouter的使用](React笔记.assets/5.4.6 withRouter的使用.gif)
+
+2. 代码：
+
+   > 代码：ShangguiguMe\react_staging\21_src_withRouter的使用
+
+   - 绑定操作prop事件的按钮
+   - 使用withRouter加工组件。
+
+
+
+## 6. ReactUI组件库
+
+> AntDesign（蚂蚁金服公司）
+>
+> material-ui（国外）
+>
+> ElementUI（饿了吗公司，Vue扩展过来）
+>
+> Vant（有赞公司，手机端）
+
+### 6.1 基本使用
+
+> 代码：
+
+### 6.2 按需引入
+
+### 6.3 自定义主题
+
+
+
+## 7.
 
 
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import qs from 'querystring-es3'
+import qs from 'querystring-es3'
 
 const DetailData = [
     { id: '01', content: '你好，中国' },
@@ -15,10 +15,8 @@ export default class Detail extends Component {
         // const { id, title } = this.props.match.params
 
 		// 接收search参数
-        // const {search} = this.props.location
-        // const {id,title} = qs.parse(search.slice(1))
-
-        const {id,title} = this.props.location.state || {}
+        const {search} = this.props.location
+        const {id,title} = qs.parse(search.slice(1))
 
         const findResult = DetailData.find((detailObj) => {
             return detailObj.id === id
