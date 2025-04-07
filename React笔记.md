@@ -2389,18 +2389,166 @@ console.log('请求出错',error);
 
 
 
-## 7. redux
+## 7. Redux
 
-#### 7.1 redux理解
+### 7.1 Redux理解
 
-1. redux是一个用于装填管理与组件通信的JS库（不是reacct插件库），用作多个组件共享的状态。
-2. 独立于React，虽然为React设计，但是也可以为Vue，Angular等框架使用。
+1. Redux是一个用于状态管理与组件通信的JS库（不是reacct插件库），用作多个组件共享的状态。
+
+2. 独立于React，虽然为React设计，但是也可以为Vue，Angular等框架使用（很少）。Redux之于React相当于Vuex之于Vue，Redis之于后端Python、Java数据库。
+
 3. 使用场景：
    - 某个组件的状态，需要让其他组件随时拿到（共享）
    - 某个组件的状态需要被另一个组件影响（通信）
    - 总体原则：能不用就不用，如果不用比较吃力才考虑使用（简单项目不用，复杂项目需用）。
+   
+4. 下载redux
+
+   ```bash
+   # 创建react脚手架
+   create-react-app redux_test
+   cd redux_test
+   # 下载redux
+   npm install redux
+   ```
+
+5. 学习资料
+
+   - 英文文档: https://redux.js.org/
+   - 中文文档: http://www.redux.org.cn/
+   - Github: https://github.com/reactjs/redux
 
 
 
-#### 7.2
+### 7.2 Redux的三个核心概念
+
+![7.2 Redux的三个核心概念](React笔记.assets/7.2 Redux的三个核心概念.png)
+
+1. action：
+
+   - 动作的对象
+   - 包含2个属性
+     - type：标识属性, 值为字符串, 唯一, 必要属性
+     - data：数据属性, 值类型任意, 可选属性
+     - 例子：{ type: 'ADD_STUDENT',data:{name: 'tom',age:18} }
+
+2.  reducer
+
+   - 用于初始化状态、加工状态。
+   - 加工时，根据旧的state和action， 产生新的state的**纯函数**。
+
+3. store
+
+   - 将state、action、reducer联系在一起的对象
+
+   - 如何得到此对象?
+
+     ```
+     - import {createStore} from 'redux'
+     - import reducer from './reducers'
+     - const store = createStore(reducer)
+     ```
+
+   - 此对象的功能?
+
+     - getState(): 得到state
+     - dispatch(action): 分发action, 触发reducer调用, 产生新的state
+     - subscribe(listener): 注册监听, 当产生了新的state时, 自动调用
+
+
+
+### 7.3 Redux写加减法器件
+
+#### 7.3.1 纯React
+
+1. 效果：
+
+   ![7.3.1 纯React](React笔记.assets/7.3.1 纯React.gif)
+
+2. 代码：
+
+   > 代码：ShangguiguMe\redux_test\1_src_纯react版
+
+   - Count组件内部管理状态，setState，getState。
+   - 内部按钮绑定事件函数
+
+
+
+#### 7.3.2 React精简版
+
+1. 效果：与上述相同
+
+2. 代码：
+
+   - src/redux下构建redux相关模块
+
+     - store.js构建store对象
+
+       ```react
+       /* 
+           该文件专门用于暴露一个store对象，整个应用只有一个store对象
+       */
+       
+       //引入createStore，专门用于创建redux中最为核心的store对象
+       import {createStore} from 'redux'
+       //引入为Count组件服务的reducer
+       import countReducer from './count_reducer'
+       //暴露store
+       export default createStore(countReducer)
+       ```
+
+     - count_reducer.js构建reducer处理函数，这里case选项都只是简单纯函数。
+
+       ```react
+       /* 
+       	1.该文件是用于创建一个为Count组件服务的reducer，reducer的本质就是一个函数
+       	2.reducer函数会接到两个参数，分别为：之前的状态(preState)，动作对象(action)
+       */
+       
+       const initState = 0 //初始化状态
+       export default function countReducer(preState=initState,action){
+       	console.log(preState);
+       	//从action对象中获取：type、data
+       	const {type,data} = action
+       	//根据type决定如何加工数据
+           // swicht case语句调用使用简单纯函数
+       	switch (type) {
+       		case 'increment': //如果是加
+                   console.log('reducer increment');
+       			return preState + data
+       		case 'decrement': //若果是减
+                   console.log('reducer decrement');
+       			return preState - data
+       		default:
+       			return preState
+       	}
+       }
+       ```
+
+   - src/components/Counter/index.jsx组件
+
+     - 调用reducer函数的case选项修改state
+
+       ```react
+       store.dispatch({ type: 'increment', data: value * 1 })
+       ```
+
+     - 使用state
+
+       ```react
+       <h1>当前求和为：{store.getState()}</h1>
+       ```
+
+   - 整体src/index中添加对于redux状态的响应
+
+     ```react
+     // 整体调用, 订阅redux中的状态变化, 每次store中state发生变化都会调用render重新渲染, 内部调用Diffing算法加速
+     store.subscribe(()=>{
+       root.render(<App/>,document.getElementById('root'))
+     })
+     ```
+
+     
+
+#### 7.3.3 Redux完整版
 
