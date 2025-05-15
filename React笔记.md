@@ -2552,3 +2552,43 @@ console.log('请求出错',error);
 
 #### 7.3.3 Redux完整版
 
+1. 效果与上述相同
+
+2. 代码，在jsx文件中不通过字符串指派action，而是通过redux定义额外的action文件
+
+   - src/redux下构建redux相关模块调整
+
+     - constant.js：新增全局变量为action类型
+
+       ```jsx
+       /* 
+       	该模块是用于定义action对象中type类型的常量值，目的只有一个：便于管理的同时防止程序员单词写错
+       */
+       export const INCREMENT = 'increment'
+       export const DECREMENT = 'decrement'
+       ```
+
+     - count_action.js：创建全局变量对应的action对象
+
+       ```jsx
+       /* 
+       	该文件专门为Count组件生成action对象
+       */
+       import {INCREMENT,DECREMENT} from './constant'
+       
+       export const createIncrementAction = data => ({type:INCREMENT,data})
+       export const createDecrementAction = data => ({type:DECREMENT,data})
+       
+       ```
+
+     - count_reducer.js：switch case通过全局变量选择
+
+       
+
+   - src/components/Counter/index.jsx组件
+
+     ```jsx
+     store.dispatch(createIncrementAction(value * 1))
+     ```
+
+     
