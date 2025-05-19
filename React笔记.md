@@ -2525,7 +2525,7 @@ console.log('请求出错',error);
        }
        ```
 
-   - src/components/Counter/index.jsx组件
+   - src\components\Counter\index.jsx组件
 
      - 调用reducer函数的case选项修改state
 
@@ -2539,7 +2539,7 @@ console.log('请求出错',error);
        <h1>当前求和为：{store.getState()}</h1>
        ```
 
-   - 整体src/index中添加对于redux状态的响应
+   - 整体src\index中添加对于redux状态的响应
 
      ```react
      // 整体调用, 订阅redux中的状态变化, 每次store中state发生变化都会调用render重新渲染, 内部调用Diffing算法加速
@@ -2585,10 +2585,185 @@ console.log('请求出错',error);
 
        
 
-   - src/components/Counter/index.jsx组件
+   - src\components\Counter\index.jsx组件
 
      ```jsx
      store.dispatch(createIncrementAction(value * 1))
      ```
 
+
+
+
+### 7.4 Redux异步
+
+1. 效果与上述先相同，管理异步的逻辑从React组件移到Redux中。简单来说，传入js对象的同步调用，传入函数的是异步调用。
+
+2. 安装依赖
+
+   ```bash
+   npm install redux-thunk
+   ```
+
+3. 代码
+
+   - src\redux\store.js开启对异步action的支持。
+
+     ```react
+     //引入redux-thunk，用于支持异步action
+     import {thunk} from 'redux-thunk'
      
+     //暴露store
+     export default createStore(countReducer, applyMiddleware(thunk))    
+     ```
+
+   - src\redux\count_action.js
+
+     ```react
+     export const createIncrementAsyncAction = (data, time) => {
+     	return (dispatch) => {
+     		setTimeout(
+     			() => {dispatch(createIncrementAction(data)) },
+     			time
+     		)
+     	}
+     }
+     ```
+
+   - src\components\Counter\index.jsx组件的异步任务调用方式改变
+
+     ```react
+     import {
+         createIncrementAction,
+         createDecrementAction,
+         createIncrementAsyncAction
+     } from '../../redux/count_action'
+     
+     //异步加，等待1s
+     incrementAsync = () => {
+         const { value } = this.selectNumber
+         // // 组件内部管理异步任务
+         // setTimeout(() => {
+         //     store.dispatch(createIncrementAction(value * 1))
+         // }, 1000) // 1s后再相加
+     
+         // redux管理异步任务
+         store.dispatch(createIncrementAsyncAction(value * 1, 500))
+     }
+     
+     ```
+
+
+
+### 7.5 react-redux
+
+> 代码：
+
+1. 下载react-redux包：
+
+   ```react
+   npm install react-redux
+   ```
+
+2. 代码：
+
+   - src\index.js：注释掉对于root的subscribe订阅。
+
+   - src\App.jsx：向App顶层组件传入store作为ref属性。
+
+   - src\containers\Count\index.jsx（核心）：链接组件和store中的状态，mapStateToProps和mapDispatchToProps分别传递状态和处理状态的方法。
+
+     ```react
+     //引入Count的UI组件
+     import CountUI from '../../components/Count'
+     //引入action
+     import {
+     	createIncrementAction,
+     	createDecrementAction,
+     	createIncrementAsyncAction
+     } from '../../redux/count_action'
+     
+     //引入connect用于连接UI组件与redux
+     import {connect} from 'react-redux'
+     
+     /* 
+     	1.mapStateToProps函数返回的是一个对象；
+     	2.返回的对象中的key就作为传递给UI组件props的key,value就作为传递给UI组件props的value
+     	3.mapStateToProps用于传递状态
+     */
+     function mapStateToProps(state){
+     	return {count:state}
+     }
+     
+     /* 
+     	1.mapDispatchToProps函数返回的是一个对象；
+     	2.返回的对象中的key就作为传递给UI组件props的key,value就作为传递给UI组件props的value
+     	3.mapDispatchToProps用于传递操作状态的方法
+     */
+     function mapDispatchToProps(dispatch){
+     	return {
+     		jia:number => dispatch(createIncrementAction(number)),
+     		jian:number => dispatch(createDecrementAction(number)),
+     		jiaAsync:(number,time) => dispatch(createIncrementAsyncAction(number,time)),
+     	}
+     }
+     
+     //使用connect()()创建并暴露一个Count的容器组件
+     export default connect(mapStateToProps,mapDispatchToProps)(CountUI)
+     
+     
+     ```
+
+   - src\components\Count：像使用props使用父组件（container）传来的状态和操作状态的方法，
+
+     ```react
+     import React, { Component } from 'react'
+     
+     export default class Count extends Component {
+     
+         	//加法
+     	increment = ()=>{
+     		const {value} = this.selectNumber
+     		this.props.jia(value*1)
+     	}
+     	//减法
+     	decrement = ()=>{
+     		const {value} = this.selectNumber
+     		this.props.jian(value*1)
+     	}
+     	//奇数再加
+     	incrementIfOdd = ()=>{
+     		const {value} = this.selectNumber
+     		if(this.props.count % 2 !== 0){
+     			this.props.jia(value*1)
+     		}
+     	}
+     	//异步加
+     	incrementAsync = ()=>{
+     		const {value} = this.selectNumber
+     		this.props.jiaAsync(value*1,500)
+     	}
+     
+         render() {
+             console.log(this.props)
+             return (
+                 <div>
+                     <h1>当前求和为：{this.props.count} </h1>
+                     <select ref={c => this.selectNumber = c}>
+                         <option value="1">1</option>
+                         <option value="2">2</option>
+                         <option value="3">3</option>
+                     </select>&nbsp;
+                     <button onClick={this.increment}>+</button>&nbsp;
+                     <button onClick={this.decrement}>-</button>&nbsp;
+                     <button onClick={this.incrementIfOdd}>当前求和为奇数再加</button>&nbsp;
+                     <button onClick={this.incrementAsync}>异步加</button>&nbsp;
+                 </div>
+             )
+         }
+     }
+     ```
+
+
+
+### 7.6
+
