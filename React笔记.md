@@ -2480,7 +2480,7 @@ console.log('请求出错',error);
 
 2. 代码：
 
-   - src/redux下构建redux相关模块
+   - redux下构建redux相关模块
 
      - store.js构建store对象
 
@@ -2525,7 +2525,7 @@ console.log('请求出错',error);
        }
        ```
 
-   - src\components\Counter\index.jsx组件
+   - components\Counter\index.jsx组件
 
      - 调用reducer函数的case选项修改state
 
@@ -2539,7 +2539,7 @@ console.log('请求出错',error);
        <h1>当前求和为：{store.getState()}</h1>
        ```
 
-   - 整体src\index中添加对于redux状态的响应
+   - 整体index中添加对于redux状态的响应
 
      ```react
      // 整体调用, 订阅redux中的状态变化, 每次store中state发生变化都会调用render重新渲染, 内部调用Diffing算法加速
@@ -2585,7 +2585,7 @@ console.log('请求出错',error);
 
        
 
-   - src\components\Counter\index.jsx组件
+   - components\Counter\index.jsx组件
 
      ```jsx
      store.dispatch(createIncrementAction(value * 1))
@@ -2593,8 +2593,9 @@ console.log('请求出错',error);
 
 
 
-
 ### 7.4 Redux异步
+
+> 代码：D:\2.code\React\ShangguiguMe\redux_test\4_src_异步action版
 
 1. 效果与上述先相同，管理异步的逻辑从React组件移到Redux中。简单来说，传入js对象的同步调用，传入函数的是异步调用。
 
@@ -2606,7 +2607,7 @@ console.log('请求出错',error);
 
 3. 代码
 
-   - src\redux\store.js开启对异步action的支持。
+   - redux\store.js开启对异步action的支持。
 
      ```react
      //引入redux-thunk，用于支持异步action
@@ -2616,7 +2617,7 @@ console.log('请求出错',error);
      export default createStore(countReducer, applyMiddleware(thunk))    
      ```
 
-   - src\redux\count_action.js
+   - redux\count_action.js
 
      ```react
      export const createIncrementAsyncAction = (data, time) => {
@@ -2629,7 +2630,7 @@ console.log('请求出错',error);
      }
      ```
 
-   - src\components\Counter\index.jsx组件的异步任务调用方式改变
+   - components\Counter\index.jsx组件的异步任务调用方式改变
 
      ```react
      import {
@@ -2654,23 +2655,25 @@ console.log('请求出错',error);
 
 
 
-### 7.5 react-redux
+### 7.5 react-redux基本使用
 
-> 代码：
+> 代码：D:\2.code\React\ShangguiguMe\redux_test\5_src_react-redux的基本使用
 
-1. 下载react-redux包：
+1. 示意图：![react-redux模型图](React笔记.assets/react-redux模型图.png)
+
+2. 下载react-redux包：
 
    ```react
    npm install react-redux
    ```
 
-2. 代码：
+3. 代码：
 
-   - src\index.js：注释掉对于root的subscribe订阅。
+   - index.js：注释掉对于root的subscribe订阅。
 
-   - src\App.jsx：向App顶层组件传入store作为ref属性。
+   - App.jsx：向App顶层组件传入store作为ref属性。
 
-   - src\containers\Count\index.jsx（核心）：链接组件和store中的状态，mapStateToProps和mapDispatchToProps分别传递状态和处理状态的方法。
+   - containers\Count\index.jsx（核心）：链接组件和store中的状态，mapStateToProps和mapDispatchToProps分别传递状态和处理状态的方法。
 
      ```react
      //引入Count的UI组件
@@ -2713,7 +2716,7 @@ console.log('请求出错',error);
      
      ```
 
-   - src\components\Count：像使用props使用父组件（container）传来的状态和操作状态的方法，
+   - components\Count：像使用props使用父组件（container）传来的状态和操作状态的方法，
 
      ```react
      import React, { Component } from 'react'
@@ -2765,5 +2768,50 @@ console.log('请求出错',error);
 
 
 
-### 7.6
+### 7.6 react-redux优化
+
+1. containers\Count\index.jsx容器组件和UI组件整合一个文件
+
+2. index.js：无需自己给容器组件传递store，给<App/>包裹一个<Provider store={store}>即可。
+
+   ```react
+   import { Provider } from 'react-redux'
+   import store from './redux/store'
+   
+   const root = ReactDOM.createRoot(document.getElementById('root'));
+   root.render(
+     <React.StrictMode>
+       <Provider store={store}>
+         <App />
+       </Provider>
+     </React.StrictMode>
+   );
+   ```
+
+3. 使用了react-redux后也不用再自己检测redux中状态的改变了，容器组件可以自动完成这个工作。
+
+4. mapDispatchToProps也可以简单的写成一个对象
+
+5. 从头创建一个新的UI和容器组件的流程
+
+   - 定义好UI组件---不暴露
+
+   - 引入connect生成一个容器组件，并暴露，写法如下：
+
+     ```react
+     connect(
+     	state => ({key:value}), //映射状态
+     	{key:xxxxxAction} //映射操作状态的方法
+     )(UI组件)
+     ```
+
+   - 在UI组件中通过this.props.xxxxxxx读取和操作状态
+
+
+
+### 7.7
+
+
+
+
 
