@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 //引入action
-import { increment, decrement, incrementAsync } from '../../redux/actions/count'
+import {
+	createIncrementAction,
+	createDecrementAction,
+	createIncrementAsyncAction
+} from '../../redux/actions/count'
 
 //引入connect用于连接UI组件与redux
 import { connect } from 'react-redux'
@@ -12,31 +16,31 @@ class Count extends Component {
 	//加法
 	increment = () => {
 		const { value } = this.selectNumber
-		this.props.increment(value * 1)
+		this.props.jia(value * 1)
 	}
 	//减法
 	decrement = () => {
 		const { value } = this.selectNumber
-		this.props.decrement(value * 1)
+		this.props.jian(value * 1)
 	}
 	//奇数再加
 	incrementIfOdd = () => {
 		const { value } = this.selectNumber
 		if (this.props.count % 2 !== 0) {
-			this.props.increment(value * 1)
+			this.props.jia(value * 1)
 		}
 	}
 	//异步加
 	incrementAsync = () => {
 		const { value } = this.selectNumber
-		this.props.incrementAsync(value * 1, 500)
+		this.props.jiaAsync(value * 1, 500)
 	}
 
 	render() {
 		// console.log(this.props)
 		return (
 			<div>
-				<h2>我是Count组件, 下方组件总人数为:{this.props.personCount}</h2>
+				<h2>我是Count组件, 下方组件总人数为:{this.props.renshu}</h2>
 				<h3>当前求和为：{this.props.count} </h3>
 				<select ref={c => this.selectNumber = c}>
 					<option value="1">1</option>
@@ -56,17 +60,15 @@ class Count extends Component {
 // 容器组件
 export default connect(
 	//mapDispatchToProps的一般写法
-	state => ({
-		count: state.count,
-		personCount: state.persons.length
+	state => ({ 
+		count: state.he,
+		renshu:state.rens.length
 	}),
 	//mapDispatchToProps的简写
 	{
-		// increment: increment,
-		// decrement: decrement,
-		// incrementAsync: incrementAsync,
-		// 简写为
-		increment, decrement, incrementAsync
+		jia: createIncrementAction,
+		jian: createDecrementAction,
+		jiaAsync: createIncrementAsyncAction,
 	}
 )(Count)
 

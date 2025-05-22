@@ -2809,7 +2809,164 @@ console.log('请求出错',error);
 
 
 
-### 7.7
+### 7.7 react-redux数据共享版
+
+> 代码：D:\2.code\React\ShangguiguMe\redux_test\7_src_react-redux_数据共享版
+
+1. 基本功能![7.7 react-redux数据共享版](React笔记.assets/7.7 react-redux数据共享版.gif)
+
+2. 调整redux结构，添加新的
+
+   - 创建redux\reducers、redux\actions文件夹
+
+   - 把之前的Count组件对应的count_reducers.js, count_actions.js放到文件夹下修改文件名都为count.js，并调整引用路径
+
+   - 创建新的Person组件对应的reducers、actions。（这里的reducer必须是纯函数，要求不能改变原）
+
+     ```
+     export default function personReducer(preState=initState,action){
+     	// console.log('personReducer@#@#@#');
+     	const {type,data} = action
+     	switch (type) {
+     		case ADD_PERSON: //若是添加一个人
+     			return [data,...preState]
+     		default:
+     			return preState
+     	}
+     }
+     ```
+
+     
+
+   - 向常量文件redux\constants.js添加
+
+     ```react
+     export const ADD_PERSON = 'add_person'
+     ```
+
+   - 调整store中reducer的注册方式，改用combineReducers
+
+     ```react
+     //汇总所有的reducer变为一个总的reducer
+     const allReducer = combineReducers({
+         he: countReducer,
+         rens: personReducer
+     })
+     
+     //暴露store
+     export default createStore(allReducer, applyMiddleware(thunk))    
+     ```
+
+3. 添加新的容器组件containers/Person/index.jsx，按照allReducer中的对象key获取.
+
+
+
+## 7.8 react-redux开发者工具
+
+1. 下载
+
+   - 浏览器安装Redux DevTools
+
+   - 依赖下载（强行安装，新版不用安装）
+
+     ```bash
+     npm install redux-devtools-extension --force
+     ```
+
+2. 在redux/store.js中添加代码（新版不用添加）
+
+   ```react
+   //引入redux-devtools-extension
+   import {composeWithDevTools} from 'redux-devtools-extension'
+   
+   //汇总所有的reducer变为一个总的reducer
+   const allReducer = combineReducers({
+   	he:countReducer,
+   	rens:personReducer
+   })
+   
+   //暴露store 
+   export default createStore(allReducer,composeWithDevTools(applyMiddleware(thunk)))
+   ```
+
+3. 使用工具查看![7.8 react-redux开发者工具](React笔记.assets/7.8 react-redux开发者工具.gif)
+
+
+
+### 7.9 最终版
+
+> 代码参考：D:\2.code\React\ShangguiguMe\redux_test\9_src_最终版
+
+1. 添加注释
+
+2. 调整reducer结构
+
+   - redux\reducers\index.js：reducer的合并抽离出来
+
+     ```react
+     /* 
+     	该文件用于汇总所有的reducer为一个总的reducer
+     */
+     import {combineReducers}  from 'redux'
+     //引入为Count组件服务的reducer
+     import count from './count'
+     //引入为Person组件服务的reducer
+     import persons from './person'
+     
+     //汇总所有的reducer变为一个总的reducer
+     export default combineReducers({
+         // count: count,
+         // persons: persons
+         // 简写为
+         count,
+     	persons
+     })
+     ```
+
+   - redux\store.js：引入汇总的reducer
+
+     ```react
+     //引入createStore，专门用于创建redux中最为核心的store对象
+     import { createStore, applyMiddleware} from 'redux'
+     //引入汇总之后的reducer
+     import reducer from './reducers'
+     //引入redux-thunk，用于支持异步action
+     import { thunk } from 'redux-thunk'
+     
+     
+     //暴露store
+     export default createStore(reducer, applyMiddleware(thunk))    
+     ```
+
+3. 修改变量名与函数名
+
+   - 变量名一致：container-store-reducer中的
+   - 函数名：container-store-action-reducer中的函数名一致
+
+
+
+### 7.10 项目打包运行
+
+1. 执行命令打包项目源代码src为纯js代码到build文件夹中。
+
+   ```bash
+   npm run build 
+   ```
+
+2. 下载serve
+
+   ```
+   npm install serve -g
+   ```
+
+3. 在build目录下，项目运行使用serve运行并访问，发现链接变成http://localhost:3000/，与直接打开html页面不同有点类似于npm start的url。
+
+   ```
+   cd build
+   serve
+   ```
+
+   
 
 
 
