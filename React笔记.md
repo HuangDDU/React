@@ -3041,7 +3041,7 @@ npm start
 
 ReactHook是什么？为了方便像组件一样使用state、生命周期和ref等功能为函数式组件添加的操作。后续分别用
 
-```
+```markdown
 (1). Hook是React 16.8.0版本增加的新特性/新语法
 (2). 可以让你在函数组件中使用 state 以及其他的 React 特性
 
@@ -3072,7 +3072,7 @@ ReactHook是什么？为了方便像组件一样使用state、生命周期和ref
 
 2. 老师的笔记
 
-   ```
+   ```markdown
    (1). State Hook让函数组件也可以有state状态, 并进行状态数据的读写操作
    (2). 语法: const [xxx, setXxx] = React.useState(initValue)  
    (3). useState()说明:
@@ -3120,7 +3120,7 @@ ReactHook是什么？为了方便像组件一样使用state、生命周期和ref
 
 2. 老师的笔记
 
-   ```react
+   ```markdown
    (1). Effect Hook 可以让你在函数组件中执行副作用操作(用于模拟类组件中的生命周期钩子)
    (2). React中的副作用操作:
            发ajax请求数据获取
@@ -3159,13 +3159,129 @@ ReactHook是什么？为了方便像组件一样使用state、生命周期和ref
 
 2. 老师的笔记
 
-   ```
+   ```markdown
    (1). Ref Hook可以在函数组件中存储/查找组件内的标签或任意其它数据
    (2). 语法: const refContainer = useRef()
    (3). 作用:保存标签对象,功能与React.createRef()一样
    ```
 
+
+
+
+
+
+### 8.4 Fragment
+
+> 代码：src\components\4_fragment\index.jsx
+
+1. 组件render需要用外层标签包裹，一般用`div`，在html展示时有两种方式不展示外层标签
+   - `<Fragment></Fragment>`只有key属性
+   - `<></>`空标签不能加任何属性
+
+
+
+### 8.5 Context
+
+> 代码：src\components\5_context
+
+1. props可以在父子组件间通信，redux不受组件间关系约束通信，Context在祖先后继间通信。
+
+2. Context的定义与使用
+
+   - 定义：全局变量
+   - 创建：Context.Provider包裹
+   - 使用：this.context直接使用
+
+3. 老师的笔记
+
+
+   ```markdown
+   1) 创建Context容器对象：
+       const XxxContext = React.createContext()  
+       
+   2) 渲染子组时，外面包裹xxxContext.Provider, 通过value属性给后代组件传递数据：
+       <xxxContext.Provider value={数据}>
+           子组件
+       </xxxContext.Provider>
+       
+   3) 后代组件读取数据：
    
+       //第一种方式:仅适用于类组件 
+         static contextType = xxxContext  // 声明接收context
+         this.context // 读取context中的value数据
+         
+       //第二种方式: 函数组件与类组件都可以
+         <xxxContext.Consumer>
+           {
+             value => ( // value就是context中的value数据
+               要显示的内容
+             )
+           }
+         </xxxContext.Consumer>
+   ```
+
+
+
+### 8.6 PureComponent
+
+> 代码：src\components\6_optimize
+
+1. 问题（`index.problem.jsx`）：不是所有的标签都会用Diffing算法，而是有key的列表。普通标签的内容即使不变也会多次渲染。
+
+2. 解决方案1（`index.problem.jsx`）：定义shouldComponentUpdate，比较state和props中键值对未更改时则不更新。
+
+3. 解决方案2（`index.jsx`）：使用`PureComponent`，同事要注意内容的修改方式。
+
+   - 对于元素值的修改，setState
+
+     ```react
+     const {stus} = this.state
+     this.setState({stus:['小刘',...stus]})
+     
+     ```
+
+   - 对于列表的修改：
+
+     ```react
+     const {stus} = this.state
+     this.setState({stus:['小刘',...stus]})
+     ```
+
+4. 老师的笔记
+
+   ```markdown
+   ### Component的2个问题 
+   
+   > 1. 只要执行setState(),即使不改变状态数据, 组件也会重新render()
+   >
+   > 2. 只当前组件重新render(), 就会自动重新render子组件 ==> 效率低
+   
+   ### 效率高的做法
+   
+   >  只有当组件的state或props数据发生改变时才重新render()
+   
+   ### 原因
+   
+   >  Component中的shouldComponentUpdate()总是返回true
+   
+   ### 解决
+   
+   	办法1: 
+   		重写shouldComponentUpdate()方法
+   		比较新旧state或props数据, 如果有变化才返回true, 如果没有返回false
+   	办法2:  
+   		使用PureComponent
+   		PureComponent重写了shouldComponentUpdate(), 只有state或props数据有变化才返回true
+   		注意: 
+   			只是进行state和props数据的浅比较, 如果只是数据对象内部数据变了, 返回false  
+   			不要直接修改state数据, 而是要产生新数据
+   	项目中一般使用PureComponent来优化
+   
+   ```
+
+   
+
+### 8.7
 
 
 
